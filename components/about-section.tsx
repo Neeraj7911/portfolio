@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { motion, useInView } from "framer-motion"
-import { gsap } from "gsap"
-import Image from "next/image"
-import { Badge } from "@/components/ui/badge"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { gsap } from "gsap";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function AboutSection() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
+    gsap.registerPlugin(ScrollTrigger);
 
     if (isInView) {
       const ctx = gsap.context(() => {
@@ -26,23 +26,23 @@ export default function AboutSection() {
           transformOrigin: "center center",
           duration: 1.2,
           ease: "power3.out",
-        })
+        });
 
         // Animate image mask reveal
         gsap.to(".image-mask", {
           width: "100%",
           duration: 1.5,
           ease: "power3.inOut",
-        })
+        });
 
         // Animate content with staggered reveal
-        gsap.from(contentRef.current?.children, {
+        gsap.from(Array.from(contentRef.current?.children || []), {
           y: 50,
           opacity: 0,
           stagger: 0.1,
           duration: 0.8,
           ease: "power3.out",
-        })
+        });
 
         // Animate tech badges
         gsap.from(".tech-badge", {
@@ -52,7 +52,7 @@ export default function AboutSection() {
           duration: 0.6,
           ease: "back.out(1.7)",
           delay: 0.5,
-        })
+        });
 
         // Parallax effect on image
         gsap.to(".about-image-parallax", {
@@ -63,12 +63,12 @@ export default function AboutSection() {
             end: "bottom top",
             scrub: true,
           },
-        })
-      }, sectionRef)
+        });
+      }, sectionRef);
 
-      return () => ctx.revert()
+      return () => ctx.revert();
     }
-  }, [isInView])
+  }, [isInView]);
 
   const technologies = [
     "React",
@@ -83,7 +83,7 @@ export default function AboutSection() {
     "GSAP",
     "Framer Motion",
     "Next.js",
-  ]
+  ];
 
   return (
     <div ref={sectionRef} className="container px-4 mx-auto relative">
@@ -135,18 +135,23 @@ export default function AboutSection() {
           </h3>
 
           <p className="text-muted-foreground reveal-text">
-            I'm a fresh software developer with a strong foundation in modern web technologies. My journey in
-            programming began during my computer science studies, where I discovered my passion for building intuitive
-            and efficient applications.
+            I'm a fresh software developer with a strong foundation in modern
+            web technologies. My journey in programming began during my computer
+            science studies, where I discovered my passion for building
+            intuitive and efficient applications.
           </p>
 
           <p className="text-muted-foreground reveal-text">
-            I specialize in frontend development with React and have experience building responsive, accessible, and
-            performant web applications. I'm constantly learning and exploring new technologies to expand my skill set.
+            I specialize in frontend development with React and have experience
+            building responsive, accessible, and performant web applications.
+            I'm constantly learning and exploring new technologies to expand my
+            skill set.
           </p>
 
           <div className="reveal-text">
-            <h4 className="text-lg font-semibold mb-3">Technologies I work with:</h4>
+            <h4 className="text-lg font-semibold mb-3">
+              Technologies I work with:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {technologies.map((tech, index) => (
                 <Badge
@@ -163,5 +168,5 @@ export default function AboutSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
