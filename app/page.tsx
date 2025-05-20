@@ -1,103 +1,150 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Github, Linkedin, Twitter } from "lucide-react";
+import HeroSection from "@/components/hero-section";
+import AboutSection from "@/components/about-section";
+import SkillsSection from "@/components/skills-section";
+import ProjectsSection from "@/components/projects-section";
+import EducationSection from "@/components/education-section";
+import ContactSection from "@/components/contact-section";
+import NavMenu from "@/components/nav-menu";
+import BackgroundEffects from "@/components/background-effects";
+import CustomCursor from "@/components/custom-cursor";
+import SmoothScroll from "@/components/smooth-scroll";
+import LoadingScreen from "@/components/loading-screen";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [activeSection, setActiveSection] = useState("hero");
+  const [isLoading, setIsLoading] = useState(true);
+  const mainRef = useRef<HTMLDivElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  useEffect(() => {
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      // Create scroll triggers for each section
+      const sections = [
+        "hero",
+        "about",
+        "skills",
+        "projects",
+        "education",
+        "contact",
+      ];
+
+      // Clear any existing ScrollTriggers to prevent duplicates
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+
+      sections.forEach((section) => {
+        ScrollTrigger.create({
+          trigger: `#${section}`,
+          start: "top center",
+          end: "bottom center",
+          onEnter: () => setActiveSection(section),
+          onEnterBack: () => setActiveSection(section),
+          markers: false,
+        });
+      });
+
+      // Initialize horizontal scroll sections if they exist
+      const horizontalSections = document.querySelectorAll(
+        ".horizontal-scroll-section"
+      );
+
+      horizontalSections.forEach((section) => {
+        const container = section.querySelector(".horizontal-scroll-container");
+
+        if (container) {
+          const width = container.scrollWidth;
+
+          gsap.to(container, {
+            x: -(width - window.innerWidth + 100),
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: `+=${width}`,
+              scrub: 1,
+              pin: true,
+              anticipatePin: 1,
+            },
+          });
+        }
+      });
+    }
+
+    return () => {
+      // Clean up all scroll triggers
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [isLoading]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <ThemeProvider defaultTheme="dark" attribute="class">
+      <SmoothScroll>
+        <CustomCursor />
+        <main ref={mainRef} className="relative min-h-screen overflow-hidden">
+          <BackgroundEffects />
+
+          <div className="fixed top-6 right-6 z-50 flex items-center gap-4">
+            <ThemeToggle />
+          </div>
+
+          <NavMenu activeSection={activeSection} />
+
+          <section id="hero" className="min-h-screen">
+            <HeroSection />
+          </section>
+
+          <section id="about" className="min-h-screen py-20">
+            <AboutSection />
+          </section>
+
+          <section id="skills" className="min-h-screen py-20">
+            <SkillsSection />
+          </section>
+
+          <section id="projects" className="min-h-screen py-20">
+            <ProjectsSection />
+          </section>
+
+          <section id="education" className="min-h-screen py-20">
+            <EducationSection />
+          </section>
+
+          <section id="contact" className="min-h-screen py-20">
+            <ContactSection />
+          </section>
+
+          <footer className="py-8 border-t border-border/20 backdrop-blur-sm">
+            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+              <p className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} Neeraj Kumar. All rights reserved.
+              </p>
+            </div>
+          </footer>
+        </main>
+      </SmoothScroll>
+    </ThemeProvider>
   );
 }
